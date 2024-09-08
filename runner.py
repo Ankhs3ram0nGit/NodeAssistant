@@ -18,12 +18,26 @@ def simulate_keypress(text_list):
     time.sleep(0.5)  # Ensure the target application is in focus
 
     for text in text_list:
-        pyperclip.copy(text)
-        pyautogui.hotkey('ctrl', 'v')  # Paste the text
-        pyautogui.keyDown('shift')
-        pyautogui.press('enter')
-        pyautogui.keyUp('shift')
-        time.sleep(0.2)  # Ensure Shift + Enter is processed
+        if "@" in text:
+            pyperclip.copy(text)
+            pyautogui.hotkey('ctrl', 'v')  # Paste the text
+            pyautogui.keyDown('shift')
+            pyautogui.press('enter')
+            pyautogui.keyUp('shift')
+            pyautogui.press('backspace')
+
+            # Ensure Shift + Enter is processed
+            time.sleep(0.2)  
+        else:
+            pyperclip.copy(text)
+            pyautogui.hotkey('ctrl', 'v')  # Paste the text
+            pyautogui.keyDown('shift')
+            pyautogui.press('enter')
+            pyautogui.keyUp('shift')
+
+            # Ensure Shift + Enter is processed
+            time.sleep(0.2)  
+
 
 def on_sms_shortcut():
     """ Handles the SMS input shortcut """
