@@ -18,26 +18,23 @@ def simulate_keypress(text_list):
     time.sleep(0.5)  # Ensure the target application is in focus
 
     for text in text_list:
+        pyperclip.copy(text)
+        pyautogui.hotkey('ctrl', 'v')  # Paste the text
+        pyautogui.keyDown('shift')
+        pyautogui.press('enter')
+        pyautogui.keyUp('shift')
+
+        # Handle the case where the text contains '@'
         if "@" in text:
-            pyperclip.copy(text)
-            pyautogui.hotkey('ctrl', 'v')  # Paste the text
-            pyautogui.keyDown('shift')
-            pyautogui.press('enter')
-            pyautogui.keyUp('shift')
-            pyautogui.press('backspace')
-
-            # Ensure Shift + Enter is processed
-            time.sleep(0.2)  
-        else:
-            pyperclip.copy(text)
-            pyautogui.hotkey('ctrl', 'v')  # Paste the text
-            pyautogui.keyDown('shift')
-            pyautogui.press('enter')
-            pyautogui.keyUp('shift')
-
-            # Ensure Shift + Enter is processed
-            time.sleep(0.2)  
-
+            # Gets index of next element
+            current_index = text_list.index(text)
+            if current_index + 1 < len(text_list):
+                next_text = text_list[current_index + 1]
+                if next_text and next_text[0] in {",", "."}:
+                    # Process additional actions for special characters
+                    pyautogui.press('backspace')
+        
+        time.sleep(0.2)  # Ensure Shift + Enter is processed
 
 def on_sms_shortcut():
     """ Handles the SMS input shortcut """
@@ -53,7 +50,7 @@ def get_user_input():
     """ Collects SMS and Email inputs from the user """
     global sms, email
 
-    print("(use ' for line breaks ' ' for multiple line breaks. Eg: Dear represantative of @applicantName ' , ' ' Contents of the meesage.)")
+    print("(use ' for line breaks ' ' for multiple line breaks. Eg: Dear representative of @applicantName ' , ' ' Contents of the message.)")
     print("Enter text for SMS: ")
     sms_text = input()
     sms = [element.strip() for element in sms_text.split("'")]
@@ -61,7 +58,6 @@ def get_user_input():
     print("Enter text for Email: ")
     email_text = input()
     email = [element.strip() for element in email_text.split("'")]
-
 
 def main():
     # Collect user input before starting to listen for shortcuts
